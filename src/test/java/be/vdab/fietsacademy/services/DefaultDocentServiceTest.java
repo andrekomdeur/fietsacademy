@@ -29,7 +29,8 @@ class DefaultDocentServiceTest {
     @BeforeEach
     void beforeEach() {
         docent = new Docent("test", "test",
-                Geslacht.MAN, BigDecimal.valueOf(100), "test@test.be");
+                BigDecimal.valueOf(100), "test@test.be",
+                Geslacht.MAN);
         service = new DefaultDocentService(repository);
     }
 

@@ -14,7 +14,7 @@ class DocentTest {
     private Docent docent1;
     @BeforeEach
     void beforeEach(){
-        docent1 = new Docent("Test","Test",Geslacht.MAN,WEDDE,"t.test@test.com");
+        docent1 = new Docent("Test","Test",WEDDE,"t.test@test.com",Geslacht.MAN);
     }
     @Test
     void verhoging(){

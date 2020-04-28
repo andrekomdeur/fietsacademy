@@ -14,20 +14,20 @@ public class Docent {
     private long id;
     private String voornaam;
     private String familienaam;
-    @Enumerated(EnumType.STRING)
-    private Geslacht geslacht;
     private BigDecimal wedde;
     private String emailAdres;
+    @Enumerated(EnumType.STRING)
+    private Geslacht geslacht;
 
     protected Docent() {
     }
 
-    public Docent(String voornaam, String familienaam, Geslacht geslacht, BigDecimal wedde, String emailAdres) {
+    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht) {
         this.voornaam = voornaam;
         this.familienaam = familienaam;
-        this.geslacht = geslacht;
         this.wedde = wedde;
         this.emailAdres = emailAdres;
+        this.geslacht = geslacht;
     }
 
     public void verhoging(BigDecimal percentage){
