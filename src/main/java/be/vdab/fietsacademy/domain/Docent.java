@@ -26,20 +26,22 @@ public class Docent {
             joinColumns = @JoinColumn(name = "docentid"))
     @Column(name = "bijnaam")
     private Set<String> bijnamen;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "campusid")
-    private Campus campus;
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "campusid")
+//    private Campus campus;
 
     protected Docent() {
     }
 
-    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht, Campus campus) {
+    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht
+//            , Campus campus
+    ) {
         this.voornaam = voornaam;
         this.familienaam = familienaam;
         this.wedde = wedde;
         this.emailAdres = emailAdres;
         this.geslacht = geslacht;
-        this.campus = campus;
+//        this.campus = campus;
         this.bijnamen = new LinkedHashSet<>();
     }
 
@@ -77,7 +79,7 @@ public class Docent {
         return Collections.unmodifiableSet(bijnamen);
     }
 
-    public Campus getCampus() { return campus; }
+//    public Campus getCampus() { return campus; }
 
     public boolean addBijnaam(String bijnaam) {
         if (bijnaam.trim().isEmpty()) {
@@ -88,5 +90,16 @@ public class Docent {
 
     public boolean removeBijnaam(String bijnaam) {
         return bijnamen.remove(bijnaam);
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Docent) {
+            return emailAdres.equalsIgnoreCase(((Docent) obj).emailAdres);
+        }
+        return false;
+    }
+    @Override
+    public int hashCode() {
+        return emailAdres == null ? 0 : emailAdres.toLowerCase().hashCode();
     }
 }
