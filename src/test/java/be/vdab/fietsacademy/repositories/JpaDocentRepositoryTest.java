@@ -1,8 +1,6 @@
 package be.vdab.fietsacademy.repositories;
 import be.vdab.fietsacademy.domain.Docent;
 import be.vdab.fietsacademy.domain.Geslacht;
-import be.vdab.fietsacademy.queryresults.IdEnEmailAdres;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -13,7 +11,7 @@ import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static java.math.BigDecimal.*;
+import static java.math.BigDecimal.TEN;
 import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @Author Andre Komdeur
@@ -133,5 +131,22 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
                 "select wedde from docenten where id=?", BigDecimal.class,
                 idVanTestMan()))
                 .isEqualByComparingTo("1100");
+    }
+    @Test
+    void bijnamenLezen() {
+        assertThat(repository.findById(idVanTestMan()).get().getBijnamen())
+                .containsOnly("test-bij");
+    }
+    @Test
+    void bijnaamToevoegen() {
+        docent = new Docent("test", "test"
+                , TEN, "test@test.be", Geslacht.MAN);
+        repository.create(docent);
+        docent.addBijnaam("test-bij2");
+        manager.flush();
+        assertThat(super.jdbcTemplate.queryForObject(
+                "select bijnaam from docentenbijnamen where docentid=?", String.class,
+                docent.getId()))
+                .isEqualTo("test-bij2");
     }
 }

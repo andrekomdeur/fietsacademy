@@ -4,6 +4,7 @@ package be.vdab.fietsacademy.repositories;
  */
 import be.vdab.fietsacademy.domain.Adres;
 import be.vdab.fietsacademy.domain.Campus;
+import be.vdab.fietsacademy.domain.TelefoonNr;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -40,5 +41,10 @@ class JpaCampusRepositoryTest
         Campus campus = new Campus("test", new Adres("test", "test", "test", "test"));
         repository.create(campus);
         assertThat(super.countRowsInTableWhere(CAMPUSSEN,"id=" + campus.getId())).isOne();
+    }
+    @Test
+    void telefoonNrsLezen() {
+        assertThat(repository.findById(idVanTestCampus()).get().getTelefoonNrs())
+                .containsOnly(new TelefoonNr("1", false, "test"));
     }
 }
