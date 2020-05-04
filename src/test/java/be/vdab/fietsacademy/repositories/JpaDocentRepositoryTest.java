@@ -42,14 +42,10 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
                 "select id from docenten where voornaam='testV'", Long.class);
     }
 
-    @BeforeEach
-    void beforeEach() {
-        docent = new Docent("test", "test"
-                , TEN, "test@test.be", Geslacht.MAN);
-    }
-
     @Test
     void create() {
+        docent = new Docent("test", "test"
+                , TEN, "test@test.be", Geslacht.MAN);
         repository.create(docent);
         assertThat(docent.getId()).isPositive();
         assertThat(super.countRowsInTableWhere(DOCENTEN, "id=" + docent.getId())).isOne();
@@ -57,7 +53,6 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
 
     @Test
     void delete() {
-        docent = new Docent("test", "test", TEN, "test@test.com", Geslacht.MAN);
         long id = idVanTestMan();
         repository.delete(id);
         manager.flush();
