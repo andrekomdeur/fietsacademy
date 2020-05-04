@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ComponentScan(
         value = "be.vdab.fietsacademy.repositories",
         resourcePattern = "JpaDocentRepository.class")
+@Sql("/insertCampus.sql")
 @Sql("/insertDocent.sql")
 class DefaultDocentServiceIntegrationTest
         extends AbstractTransactionalJUnit4SpringContextTests {

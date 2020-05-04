@@ -23,25 +23,31 @@ public class Docent {
     private Geslacht geslacht;
     @ElementCollection
     @CollectionTable(name = "docentenbijnamen",
-            joinColumns = @JoinColumn(name = "docentid") )
+            joinColumns = @JoinColumn(name = "docentid"))
     @Column(name = "bijnaam")
     private Set<String> bijnamen;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "campusid")
+    private Campus campus;
+
     protected Docent() {
     }
 
-    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht) {
+    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht, Campus campus) {
         this.voornaam = voornaam;
         this.familienaam = familienaam;
         this.wedde = wedde;
         this.emailAdres = emailAdres;
         this.geslacht = geslacht;
-        this.bijnamen = new LinkedHashSet<>();    }
+        this.campus = campus;
+        this.bijnamen = new LinkedHashSet<>();
+    }
 
-    public void verhoging(BigDecimal percentage){
-        if (percentage.compareTo(BigDecimal.ZERO) <=0 ) {
+    public void verhoging(BigDecimal percentage) {
+        if (percentage.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException();
         }
-        BigDecimal factor=BigDecimal.ONE.add(percentage.divide(BigDecimal.valueOf(100)));
+        BigDecimal factor = BigDecimal.ONE.add(percentage.divide(BigDecimal.valueOf(100)));
         wedde = wedde.multiply(factor, new MathContext(2, RoundingMode.HALF_UP));
     }
 
@@ -70,12 +76,17 @@ public class Docent {
     public Set<String> getBijnamen() {
         return Collections.unmodifiableSet(bijnamen);
     }
+
+    public Campus getCampus() { return campus; }
+
     public boolean addBijnaam(String bijnaam) {
         if (bijnaam.trim().isEmpty()) {
             throw new IllegalArgumentException();
         }
         return bijnamen.add(bijnaam);
     }
+
     public boolean removeBijnaam(String bijnaam) {
         return bijnamen.remove(bijnaam);
-    }}
+    }
+}

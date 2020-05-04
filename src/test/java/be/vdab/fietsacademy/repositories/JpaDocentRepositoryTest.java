@@ -1,6 +1,9 @@
 package be.vdab.fietsacademy.repositories;
+import be.vdab.fietsacademy.domain.Adres;
+import be.vdab.fietsacademy.domain.Campus;
 import be.vdab.fietsacademy.domain.Docent;
 import be.vdab.fietsacademy.domain.Geslacht;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -11,18 +14,19 @@ import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static java.math.BigDecimal.TEN;
 import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @Author Andre Komdeur
  */
 @DataJpaTest
+@Sql("/insertCampus.sql")
 @Sql("/insertDocent.sql")
 @Import(JpaDocentRepository.class)
 public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
     private final JpaDocentRepository repository;
     private static final String DOCENTEN = "docenten";
     private Docent docent;
+    private Campus campus;
     private final EntityManager manager;
 
     JpaDocentRepositoryTest(JpaDocentRepository repository, EntityManager manager) {
@@ -39,14 +43,22 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
         return super.jdbcTemplate.queryForObject(
                 "select id from docenten where voornaam='testV'", Long.class);
     }
-
+    @BeforeEach
+    void beforeEach() {
+        campus = new Campus("test",
+                new Adres("test", "test", "test", "test"));
+        docent = new Docent("test", "test"
+                , BigDecimal.TEN, "test@test.be", Geslacht.MAN, campus);
+    }
     @Test
     void create() {
-        docent = new Docent("test", "test"
-                , TEN, "test@test.be", Geslacht.MAN);
+        manager.persist(campus);
         repository.create(docent);
         assertThat(docent.getId()).isPositive();
         assertThat(super.countRowsInTableWhere(DOCENTEN, "id=" + docent.getId())).isOne();
+        assertThat(super.jdbcTemplate.queryForObject(
+                "select campusid from docenten where id=?", Long.class, docent.getId()))
+                .isEqualTo(campus.getId());
     }
 
     @Test
@@ -139,8 +151,7 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
     }
     @Test
     void bijnaamToevoegen() {
-        docent = new Docent("test", "test"
-                , TEN, "test@test.be", Geslacht.MAN);
+        manager.persist(campus);
         repository.create(docent);
         docent.addBijnaam("test-bij2");
         manager.flush();
@@ -148,5 +159,10 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
                 "select bijnaam from docentenbijnamen where docentid=?", String.class,
                 docent.getId()))
                 .isEqualTo("test-bij2");
+    }
+    @Test
+    void campusLazyLoaded() {
+        Docent docent = repository.findById(idVanTestMan()).get();
+        assertThat(docent.getCampus().getNaam()).isEqualTo("test");
     }
 }

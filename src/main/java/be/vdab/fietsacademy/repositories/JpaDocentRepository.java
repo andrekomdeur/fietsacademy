@@ -77,4 +77,5 @@ class JpaDocentRepository implements DocentRepository {
         return manager.createNamedQuery("Docent.algemeneOpslag")
                 .setParameter("factor", factor)
                 .executeUpdate();    }
+
 }

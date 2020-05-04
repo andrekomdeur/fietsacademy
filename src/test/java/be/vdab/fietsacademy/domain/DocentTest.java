@@ -11,9 +11,11 @@ import static org.assertj.core.api.Assertions.*;
 class DocentTest {
     private final static BigDecimal WEDDE = BigDecimal.valueOf(200);
     private Docent docent1;
+    private Campus campus1;
     @BeforeEach
     void beforeEach(){
-        docent1 = new Docent("Test","Test",WEDDE,"t.test@test.com",Geslacht.MAN);
+        campus1 = new Campus("test", new Adres("test", "test", "test", "test"));
+        docent1 = new Docent("Test","Test",WEDDE,"t.test@test.com",Geslacht.MAN, campus1);
     }
     @Test
     void verhoging(){
