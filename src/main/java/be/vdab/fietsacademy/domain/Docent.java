@@ -29,13 +29,13 @@ public class Docent {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "campusid")
     private Campus campus;
+    @ManyToMany(mappedBy = "docenten")
+    private Set<Verantwoordelijkheid> verantwoordelijkheden = new LinkedHashSet<>();
 
     protected Docent() {
     }
 
-    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht
-            , Campus campus
-    ) {
+    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht, Campus campus) {
         this.voornaam = voornaam;
         this.familienaam = familienaam;
         this.wedde = wedde;
@@ -45,6 +45,24 @@ public class Docent {
         this.bijnamen = new LinkedHashSet<>();
     }
 
+    public boolean add(Verantwoordelijkheid verantwoordelijkheid) {
+        boolean toegevoegd = verantwoordelijkheden.add(verantwoordelijkheid);
+        if ( ! verantwoordelijkheid.getDocenten().contains(this)) {
+            verantwoordelijkheid.add(this);
+        }
+        return toegevoegd;
+    }
+
+    public boolean remove(Verantwoordelijkheid verantwoordelijkheid) {
+        boolean verwijderd = verantwoordelijkheden.remove(verantwoordelijkheid);
+        if (verantwoordelijkheid.getDocenten().contains(this)) {
+            verantwoordelijkheid.remove(this);
+        }
+        return verwijderd;
+    }
+    public Set<Verantwoordelijkheid> getVerantwoordelijkheden() {
+        return Collections.unmodifiableSet(verantwoordelijkheden);
+    }
     public void verhoging(BigDecimal percentage) {
         if (percentage.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException();
