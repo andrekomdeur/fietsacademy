@@ -3,6 +3,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -33,7 +34,8 @@ public class Docent {
     private Campus campus;
     @ManyToMany(mappedBy = "docenten")
     private Set<Verantwoordelijkheid> verantwoordelijkheden = new LinkedHashSet<>();
-
+    @Version
+    private Timestamp versie;
     protected Docent() {
     }
 
